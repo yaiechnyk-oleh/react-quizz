@@ -20,8 +20,8 @@ export const QuizTimer = ({ duration, onTimeUp }: QuizTimerProps) => {
             });
         }, 1000);
 
-        return () => clearInterval(interval);  // Cleanup the interval on component unmount
-    }, [onTimeUp]);  // 'onTimeUp' is a dependency here
+        return () => clearInterval(interval);
+    }, [onTimeUp]);
 
     const formatTime = (totalSeconds: number) => {
         const minutes = Math.floor(totalSeconds / 60);

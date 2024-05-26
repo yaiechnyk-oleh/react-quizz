@@ -18,7 +18,7 @@ export const QuizSearch = () => {
         if (storedQuizzes) {
             const quizzesData: Quiz[] = JSON.parse(storedQuizzes);
             setQuizzes(quizzesData);
-            setFilteredQuizzes(quizzesData); // Initially display all quizzes
+            setFilteredQuizzes(quizzesData);
         }
     }, []);
 

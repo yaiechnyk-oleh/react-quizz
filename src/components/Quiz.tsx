@@ -1,106 +1,8 @@
-// import React, { useEffect, useState } from 'react';
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { Button } from '../components/Button';
-//
-// interface Quiz {
-//     id: string;
-//     title: string;
-//     questions: Question[];
-// }
-//
-// interface Question {
-//     id: string;
-//     questionText: string;
-//     answers: Answer[];
-// }
-//
-// interface Answer {
-//     id: string;
-//     answerText: string;
-//     isCorrect: boolean;
-// }
-//
-// export const Quiz = () => {
-//     const [quiz, setQuiz] = useState<Quiz | null>(null);
-//     const [answers, setAnswers] = useState<{ [key: string]: string }>({});
-//     const [score, setScore] = useState<number | null>(null);
-//     const { quizId } = useParams<{ quizId: string }>();
-//     const history = useNavigate();
-//
-//     // Load the quiz data from local storage
-//     useEffect(() => {
-//         const storedQuizzes = localStorage.getItem('quizzes');
-//         if (storedQuizzes) {
-//             const quizzes: Quiz[] = JSON.parse(storedQuizzes);
-//             const foundQuiz = quizzes.find(q => q.id === quizId);
-//             if (foundQuiz) {
-//                 setQuiz(foundQuiz);
-//             } else {
-//                 history('/'); // Redirect if quiz not found
-//             }
-//         }
-//     }, [quizId, history]);
-//
-//     // Handle selecting an answer
-//     const handleAnswerChange = (questionId: string, answerId: string) => {
-//         setAnswers(prev => ({ ...prev, [questionId]: answerId }));
-//     };
-//
-//     // Submit quiz and calculate score
-//     const handleSubmit = () => {
-//         if (!quiz) return;
-//         let correctCount = 0;
-//         quiz.questions.forEach(question => {
-//             const correctAnswer = question.answers.find(a => a.isCorrect)?.id;
-//             if (answers[question.id] === correctAnswer) {
-//                 correctCount++;
-//             }
-//         });
-//         setScore(correctCount);
-//     };
-//
-//     if (score !== null) {
-//         return (
-//             <div className="container mx-auto p-4">
-//                 <h1 className="text-xl font-bold mb-4">Quiz Results</h1>
-//                 <p>You scored {score} out of {quiz?.questions.length}</p>
-//                 <Button onClick={() => history('/')}>Back to Quizzes</Button>
-//             </div>
-//         );
-//     }
-//
-//     return (
-//         <div className="container mx-auto p-4">
-//             <h1 className="text-xl font-bold mb-4">{quiz?.title}</h1>
-//             {quiz?.questions.map(question => (
-//                 <div key={question.id} className="mb-4">
-//                     <h2 className="font-semibold mb-2">{question.questionText}</h2>
-//                     <div>
-//                         {question.answers.map(answer => (
-//                             <label key={answer.id} className="block">
-//                                 <input
-//                                     type="radio"
-//                                     name={question.id}
-//                                     value={answer.id}
-//                                     onChange={() => handleAnswerChange(question.id, answer.id)}
-//                                     checked={answers[question.id] === answer.id}
-//                                     className="mr-2"
-//                                 />
-//                                 {answer.answerText}
-//                             </label>
-//                         ))}
-//                     </div>
-//                 </div>
-//             ))}
-//             <Button onClick={handleSubmit} className="mt-4 bg-blue-500">Submit Quiz</Button>
-//         </div>
-//     );
-// };
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '../components/Button';
-import { QuizTimer } from '../components/QuizTimer';
-import { Modal } from '../components/Modal'; // Ensure you import Modal from the correct path
+import { Button } from './Button';
+import { QuizTimer } from './QuizTimer';
+import { Modal } from './Modal';
 
 interface Answer {
     id: string;
@@ -112,9 +14,9 @@ interface Question {
     id: string;
     questionText: string;
     answers: Answer[];
-    points: number; // Points for the question
+    points: number;
     questionType: 'single-choice' | 'multiple-choice' | 'text-input';
-    modelAnswer?: string; // Model answer for text input questions
+    modelAnswer?: string;
 }
 
 interface Quiz {

@@ -1,189 +1,6 @@
-// import React, { useState, useEffect } from 'react';
-// import { useNavigate, useParams } from 'react-router-dom'; // For navigation and accessing URL parameters
-// import { Button } from './Button';
-//
-// interface Quiz {
-//     id: string;
-//     title: string;
-//     questions: Question[];
-// }
-//
-// interface Question {
-//     id: string;
-//     questionText: string;
-//     answers: Answer[];
-// }
-//
-// interface Answer {
-//     id: string;
-//     answerText: string;
-//     isCorrect: boolean;
-// }
-//
-// export const QuizForm = () => {
-//     const [quiz, setQuiz] = useState<Quiz>({ id: '', title: '', questions: [] });
-//     const { quizId } = useParams<{ quizId?: string }>();
-//     const history = useNavigate();
-//
-//     // Load the quiz for editing
-//     useEffect(() => {
-//         if (quizId) {
-//             const storedQuizzes = localStorage.getItem('quizzes');
-//             if (storedQuizzes) {
-//                 const quizzes: Quiz[] = JSON.parse(storedQuizzes);
-//                 const existingQuiz = quizzes.find(q => q.id === quizId);
-//                 if (existingQuiz) setQuiz(existingQuiz);
-//             }
-//         }
-//     }, [quizId]);
-//
-//     // Handle input changes for the quiz title
-//     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//         setQuiz(prevQuiz => ({ ...prevQuiz, title: event.target.value }));
-//     };
-//
-//     // Add a new question to the quiz
-//     const addQuestion = () => {
-//         const newQuestion: Question = {
-//             id: Math.random().toString(36).substr(2, 9), // Simple ID generation
-//             questionText: '',
-//             answers: []
-//         };
-//         setQuiz(prevQuiz => ({
-//             ...prevQuiz,
-//             questions: [...prevQuiz.questions, newQuestion]
-//         }));
-//     };
-//
-//     // Update question text
-//     const updateQuestionText = (questionId: string, text: string) => {
-//         const updatedQuestions = quiz.questions.map(q =>
-//             q.id === questionId ? { ...q, questionText: text } : q
-//         );
-//         setQuiz(prevQuiz => ({ ...prevQuiz, questions: updatedQuestions }));
-//     };
-//
-//     // Add a new answer to a question
-//     const addAnswer = (questionId: string) => {
-//         const newAnswer: Answer = {
-//             id: Math.random().toString(36).substr(2, 9),
-//             answerText: '',
-//             isCorrect: false
-//         };
-//         const updatedQuestions = quiz.questions.map(q =>
-//             q.id === questionId ? { ...q, answers: [...q.answers, newAnswer] } : q
-//         );
-//         setQuiz(prevQuiz => ({ ...prevQuiz, questions: updatedQuestions }));
-//     };
-//
-//     // Update answer text
-//     const updateAnswerText = (questionId: string, answerId: string, text: string) => {
-//         const updatedQuestions = quiz.questions.map(q =>
-//             q.id === questionId ? {
-//                 ...q, answers: q.answers.map(a =>
-//                     a.id === answerId ? { ...a, answerText: text } : a
-//                 )
-//             } : q
-//         );
-//         setQuiz(prevQuiz => ({ ...prevQuiz, questions: updatedQuestions }));
-//     };
-//
-//     // Set the correct answer for a question
-//     const setCorrectAnswer = (questionId: string, answerId: string) => {
-//         const updatedQuestions = quiz.questions.map(q =>
-//             q.id === questionId ? {
-//                 ...q, answers: q.answers.map(a =>
-//                     ({ ...a, isCorrect: a.id === answerId })
-//                 )
-//             } : q
-//         );
-//         setQuiz(prevQuiz => ({ ...prevQuiz, questions: updatedQuestions }));
-//     };
-//
-//     // Delete an answer
-//     const deleteAnswer = (questionId: string, answerId: string) => {
-//         const updatedQuestions = quiz.questions.map(q =>
-//             q.id === questionId ? {
-//                 ...q, answers: q.answers.filter(a => a.id !== answerId)
-//             } : q
-//         );
-//         setQuiz(prevQuiz => ({ ...prevQuiz, questions: updatedQuestions }));
-//     };
-//
-//     // Submit the form to save the quiz
-//     const handleSubmit = (event: React.FormEvent) => {
-//         event.preventDefault();
-//         const storedQuizzes = localStorage.getItem('quizzes');
-//         let quizzes: Quiz[] = storedQuizzes ? JSON.parse(storedQuizzes) : [];
-//         if (quizId) {
-//             quizzes = quizzes.map(q => q.id === quizId ? quiz : q);
-//         } else {
-//             quiz.id = Math.random().toString(36).substr(2, 9); // Generate new ID for new quiz
-//             quizzes.push(quiz);
-//         }
-//         localStorage.setItem('quizzes', JSON.stringify(quizzes));
-//         history('/'); // Navigate back to quiz list
-//     };
-//
-//     return (
-//         <div className="container mx-auto p-4">
-//             <h1 className="text-xl font-bold mb-4">{quizId ? 'Edit Quiz' : 'Create Quiz'}</h1>
-//             <form onSubmit={handleSubmit}>
-//                 <input
-//                     type="text"
-//                     className="border-2 border-gray-300 p-2 rounded mb-4 w-full"
-//                     placeholder="Enter quiz title"
-//                     value={quiz.title}
-//                     onChange={handleTitleChange}
-//                 />
-//                 {quiz.questions.map((question, qIndex) => (
-//                     <div key={question.id} className="mb-4">
-//                         <input
-//                             type="text"
-//                             className="border-2 border-gray-300 p-2 rounded mb-2 w-full"
-//                             placeholder={`Question ${qIndex + 1}`}
-//                             value={question.questionText}
-//                             onChange={e => updateQuestionText(question.id, e.target.value)}
-//                         />
-//                         {question.answers.map((answer, aIndex) => (
-//                             <div key={answer.id} className="flex items-center mb-2">
-//                                 <input
-//                                     type="text"
-//                                     className="border-2 border-gray-300 p-2 rounded flex-grow mr-2"
-//                                     placeholder={`Answer ${aIndex + 1}`}
-//                                     value={answer.answerText}
-//                                     onChange={e => updateAnswerText(question.id, answer.id, e.target.value)}
-//                                 />
-//                                 <input
-//                                     type="radio"
-//                                     name={`correct-answer-${question.id}`}
-//                                     checked={answer.isCorrect}
-//                                     onChange={() => setCorrectAnswer(question.id, answer.id)}
-//                                     className="mr-2"
-//                                 />
-//                                 <Button onClick={() => deleteAnswer(question.id, answer.id)} className="bg-red-500">
-//                                     Delete
-//                                 </Button>
-//                             </div>
-//                         ))}
-//                         <Button onClick={() => addAnswer(question.id)} className="mr-2">
-//                             Add Answer
-//                         </Button>
-//                     </div>
-//                 ))}
-//                 <Button onClick={addQuestion} className="mr-2">
-//                     Add Question
-//                 </Button>
-//                 <Button type="submit" className="bg-blue-500">
-//                     Save Quiz
-//                 </Button>
-//             </form>
-//         </div>
-//     );
-// };
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from './Button'; // Ensure this points to your Button component
+import { Button } from './Button';
 
 interface Answer {
     id: string;
@@ -196,8 +13,8 @@ interface Question {
     questionText: string;
     answers: Answer[];
     questionType: 'single-choice' | 'multiple-choice' | 'text-input';
-    modelAnswer?: string; // Model answer for text input questions
-    points: number; // Points for each question
+    modelAnswer?: string;
+    points: number;
 }
 
 interface Quiz {
@@ -234,7 +51,7 @@ export const QuizForm = () => {
             questionText: '',
             answers: [],
             questionType: 'single-choice',
-            points: 1 // Default points value
+            points: 1
         };
         setQuiz(prev => ({ ...prev, questions: [...prev.questions, newQuestion] }));
     };
@@ -348,7 +165,7 @@ export const QuizForm = () => {
             quizzes = quizzes.map(q => q.id === quizId ? quiz : q);
         } else {
             const newId = Math.random().toString(36).substr(2, 9);
-            const newQuiz = { ...quiz, id: newId }; // Create a new quiz with the new ID
+            const newQuiz = { ...quiz, id: newId };
             quizzes.push(newQuiz);
             setQuiz(newQuiz); // Update the state with the new quiz ID
         }
